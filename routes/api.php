@@ -28,8 +28,6 @@ use App\Http\Controllers\PostController;
 
 Route::resource('posts',PostController::class);
 
-
-
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });

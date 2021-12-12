@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Contracts\Filesystem;
 
 class PostController extends Controller
 {
@@ -29,7 +28,7 @@ class PostController extends Controller
             $tmp['id'] = intval($line[5]);
             $arr[] = $tmp;
         }
-        return json_encode($arr);
+        return $arr;
     }
 
     /**

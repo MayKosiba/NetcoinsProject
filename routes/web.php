@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +15,18 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $stream = Storage::disk('local')->readStream('employees.csv');
+    $arr = array();
+    while(($line = fgets($stream,4096)) != false){
+        $line = explode(',',$line);
+        $tmp = array();
+        $tmp['firstName'] = $line[0];
+        $tmp['lastName'] = $line[1];
+        $tmp['email'] = $line[2];
+        $tmp['address'] = $line[3];
+        $tmp['job'] = $line[4];
+        $tmp['id'] = intval($line[5]);
+        $arr[] = $tmp;
+    }
+    return view('employees')->with('employees',$arr);
 });
