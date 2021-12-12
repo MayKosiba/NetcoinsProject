@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Contracts\Filesystem;
 
 class PostController extends Controller
 {
@@ -39,10 +40,13 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //post
         $id = self::getNextID();
         $input = $request->input('firstName') . ',' . $request->input('lastName') . ',' . $request->input('email') . ',' .$request->input('address') . ',' . $request->input('job') . ',' . $id;
-        Storage::disk('local')->append('employees.csv', $input);
+        if(Storage::disk('local')->exists('employees.csv')){
+            Storage::disk('local')->append('employees.csv', $input);
+        } else {
+            Storage::disk('local')->put('employees.csv', $input);
+        }
         return $id;
     }
 
@@ -80,7 +84,20 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //put
+        $stream = Storage::disk('local')->readStream('employees.csv');
+        while(($line = fgets($stream,4096)) != false){
+            $val = $line;
+            $line = explode(',',$line);
+            $check = intval($line[5]);
+            if($check == $id){
+                $input = $request->input('firstName') . ',' . $request->input('lastName') . ',' . $request->input('email') . ',' .$request->input('address') . ',' . $request->input('job') . ',' . $id;
+                $dir = '../storage/app/employees.csv';
+                $contents = file_get_contents($dir);
+                $contents = str_replace($val, $input."\n", $contents);
+                file_put_contents($dir, $contents);
+            }
+        }
+        return $request;
     }
 
     /**
@@ -91,7 +108,20 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //delete
+        $stream = Storage::disk('local')->readStream('employees.csv');
+        while(($line = fgets($stream,4096)) != false){
+            $val = $line;
+            $line = explode(',',$line);
+            $check = intval($line[5]);
+            if($check == $id){
+                $input = "";
+                $dir = '../storage/app/employees.csv';
+                $contents = file_get_contents($dir);
+                $contents = str_replace($val, $input, $contents);
+                file_put_contents($dir, $contents);
+            }
+        }
+        return $line;
     }
 
     private function getNextID()
