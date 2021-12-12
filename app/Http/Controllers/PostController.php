@@ -18,6 +18,7 @@ class PostController extends Controller
         $stream = Storage::disk('local')->readStream('employees.csv');
         $arr = array();
         while(($line = fgets($stream,4096)) != false){
+            if($line == "\n") {continue;}
             $line = explode(',',$line);
             $tmp = array();
             $tmp['firstName'] = $line[0];
@@ -60,6 +61,7 @@ class PostController extends Controller
         $stream = Storage::disk('local')->readStream('employees.csv');
         $emp = array();
         while(($line = fgets($stream,4096)) != false){
+            if($line == "\n") {continue;}
             $line = explode(',',$line);
             $check = intval($line[5]);
             if($check == $id){
@@ -85,6 +87,7 @@ class PostController extends Controller
     {
         $stream = Storage::disk('local')->readStream('employees.csv');
         while(($line = fgets($stream,4096)) != false){
+            if($line == "\n") {continue;}
             $val = $line;
             $line = explode(',',$line);
             $check = intval($line[5]);
@@ -109,6 +112,7 @@ class PostController extends Controller
     {
         $stream = Storage::disk('local')->readStream('employees.csv');
         while(($line = fgets($stream,4096)) != false){
+            if($line == "\n") {continue;}
             $val = $line;
             $line = explode(',',$line);
             $check = intval($line[5]);
@@ -128,6 +132,7 @@ class PostController extends Controller
         $stream = Storage::disk('local')->readStream('employees.csv');
         $id = 0;
         while(($line = fgets($stream,4096)) != false){
+            if($line == "\n") {continue;}
             $line = explode(',',$line);
             $id = $line[5];
         }

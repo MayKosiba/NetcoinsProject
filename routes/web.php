@@ -18,6 +18,7 @@ Route::get('/', function () {
     $stream = Storage::disk('local')->readStream('employees.csv');
     $arr = array();
     while(($line = fgets($stream,4096)) != false){
+        if($line == "\n") {continue;}
         $line = explode(',',$line);
         $tmp = array();
         $tmp['firstName'] = $line[0];
